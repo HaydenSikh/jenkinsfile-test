@@ -1,21 +1,15 @@
-stage name: 'Build'
 
-node {
+node('remote') {
   wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
     wrap([$class: 'TimestamperBuildWrapper']) {
+      stage name: 'Build'
+
       git 'git@github.com:HaydenSikh/jenkinsfile-test'
       sh './sbt clean package'
-    }
-  }
-}
 
-def branches = [:]
+      def branches = [:]
 
-branches["staticAnalysis"] = {
-  node {
-    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
-      wrap([$class: 'TimestamperBuildWrapper']) {
-
+      branches["staticAnalysis"] = {
         git 'git@github.com:HaydenSikh/jenkinsfile-test'
 
         // build job: 'jenkinsfile-test_analysis', wait: false
@@ -25,38 +19,27 @@ branches["staticAnalysis"] = {
         step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, consoleParsers: [[parserName: 'Scala Compiler (scalac)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''])
         step([$class: 'TasksPublisher', canComputeNew: false, defaultEncoding: '', excludePattern: 'target/', healthy: '', high: 'FIXME', low: '', normal: 'TODO', pattern: '**/*.scala', unHealthy: ''])
       }
-    }
-  }
-}
 
-branches["deploy"] = {
- stage concurrency: 1, name: 'Deploy to staging'
+      branches["deploy"] = {
+        stage concurrency: 1, name: 'Deploy to staging'
 
-  node {
-    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
-      wrap([$class: 'TimestamperBuildWrapper']) {
         sh "echo bundle clean --force"
         sh "echo bundle install"
         sh "echo bundle exec cap staging deploy"
 
         sleep 5
-      }
-    }
-  }
 
-  stage concurrency: 1, name: 'Deploy to production'
+        stage concurrency: 1, name: 'Deploy to production'
 
-  node {
-    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
-      wrap([$class: 'TimestamperBuildWrapper']) {
         sh "echo bundle clean --force"
         sh "echo bundle install"
         sh "echo bundle exec cap production deploy"
 
         sleep 20
       }
+
+      parallel branches
     }
   }
 }
 
-parallel branches
