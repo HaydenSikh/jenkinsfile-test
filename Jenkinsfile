@@ -1,45 +1,48 @@
-stage name: 'Build'
-
-node {
-  git 'git@github.com:HaydenSikh/jenkinsfile-test'
-  sh './sbt clean package'
-}
-
-stage name: 'Analyze and Deploy'
-
-parallel (
-  staticAnalysis: { node {
-    stage name: 'Static analysis'
-
-    git 'git@github.com:HaydenSikh/jenkinsfile-test'
-
-    // build job: 'jenkinsfile-test_analysis', wait: false
-    sh './sbt scalastyle clean coverage test coverageReport'
-
-    step([$class: 'CheckStylePublisher', canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/target/scalastyle-result.xml', unHealthy: ''])
-    step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, consoleParsers: [[parserName: 'Scala Compiler (scalac)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''])
-    step([$class: 'TasksPublisher', canComputeNew: false, defaultEncoding: '', excludePattern: 'target/', healthy: '', high: 'FIXME', low: '', normal: 'TODO', pattern: '**/*.scala', unHealthy: ''])
-  }},
-  deploy: {
-    stage concurrency: 1, name: 'Deploy to staging'
+wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
+  wrap([$class: 'TimestamperBuildWrapper']) {
+    stage name: 'Build'
 
     node {
-      sh "echo bundle clean --force"
-      sh "echo bundle install"
-      sh "echo bundle exec cap staging deploy"
-
-      sleep 5
+      git 'git@github.com:HaydenSikh/jenkinsfile-test'
+      sh './sbt clean package'
     }
 
-    stage concurrency: 1, name: 'Deploy to production'
+    stage name: 'Analyze and Deploy'
 
-    node {
-      sh "echo bundle clean --force"
-      sh "echo bundle install"
-      sh "echo bundle exec cap production deploy"
+    parallel (
+      staticAnalysis: { node {
+        stage name: 'Static analysis'
 
-      sleep 20
-    }
+        git 'git@github.com:HaydenSikh/jenkinsfile-test'
+
+        // build job: 'jenkinsfile-test_analysis', wait: false
+        sh './sbt scalastyle clean coverage test coverageReport'
+
+        step([$class: 'CheckStylePublisher', canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/target/scalastyle-result.xml', unHealthy: ''])
+        step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, consoleParsers: [[parserName: 'Scala Compiler (scalac)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''])
+        step([$class: 'TasksPublisher', canComputeNew: false, defaultEncoding: '', excludePattern: 'target/', healthy: '', high: 'FIXME', low: '', normal: 'TODO', pattern: '**/*.scala', unHealthy: ''])
+      }},
+      deploy: {
+        stage concurrency: 1, name: 'Deploy to staging'
+
+        node {
+          sh "echo bundle clean --force"
+          sh "echo bundle install"
+          sh "echo bundle exec cap staging deploy"
+
+          sleep 5
+        }
+
+        stage concurrency: 1, name: 'Deploy to production'
+
+        node {
+          sh "echo bundle clean --force"
+          sh "echo bundle install"
+          sh "echo bundle exec cap production deploy"
+
+          sleep 20
+        }
+      }
+    )
   }
-)
-
+}
