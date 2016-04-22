@@ -22,10 +22,9 @@ parallel (
     stage concurrency: 1, name: 'Deploy_to_staging'
 
     node {
-      sh """echo bundle clean --force
-      echo bundle install
-      echo bundle exec cap staging deploy
-      """.stripIndent()
+      sh "echo bundle clean --force"
+      sh "echo bundle install"
+      sh "echo bundle exec cap staging deploy"
 
       sleep 5
     }
@@ -33,10 +32,9 @@ parallel (
     stage concurrency: 1, name: 'Deploy_to_production'
 
     node {
-      sh """echo bundle clean --force
-      echo bundle install
-      echo bundle exec cap production deploy
-      """.stripIndent()
+      sh "echo bundle clean --force"
+      sh "echo bundle install"
+      sh "echo bundle exec cap production deploy"
 
       sleep 20
     }
