@@ -1,26 +1,6 @@
 stage name: 'Build'
 
 node {
-  checkout([
-    $class: 'GitSCM',
-    branches: [[name: '*/master']],
-    doGenerateSubmoduleConfigurations: false,
-    extensions: [
-      [
-        $class: 'UserExclusion',
-        excludedUsers: 'jenkins'
-      ],
-      [
-        $class: 'PathRestriction',
-        excludedRegions: 'version.sbt',
-        includedRegions: ''
-      ],
-      [$class: 'PruneStaleBranch']
-    ],
-    submoduleCfg: [],
-    userRemoteConfigs: [[url: 'git@github.com:HaydenSikh/jenkinsfile-test']]
-  ])
-
   sh './sbt clean package'
 }
 
