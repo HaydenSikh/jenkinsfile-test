@@ -32,31 +32,30 @@ branches["staticAnalysis"] = {
 }
 
 branches["deploy"] = {
-   stage concurrency: 1, name: 'Deploy to staging'
+ stage concurrency: 1, name: 'Deploy to staging'
 
-    node {
-      wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
-        wrap([$class: 'TimestamperBuildWrapper']) {
-          sh "echo bundle clean --force"
-          sh "echo bundle install"
-          sh "echo bundle exec cap staging deploy"
+  node {
+    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
+      wrap([$class: 'TimestamperBuildWrapper']) {
+        sh "echo bundle clean --force"
+        sh "echo bundle install"
+        sh "echo bundle exec cap staging deploy"
 
-          sleep 5
-        }
+        sleep 5
       }
     }
+  }
 
-    stage concurrency: 1, name: 'Deploy to production'
+  stage concurrency: 1, name: 'Deploy to production'
 
-    node {
-      wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
-        wrap([$class: 'TimestamperBuildWrapper']) {
-          sh "echo bundle clean --force"
-          sh "echo bundle install"
-          sh "echo bundle exec cap production deploy"
+  node {
+    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
+      wrap([$class: 'TimestamperBuildWrapper']) {
+        sh "echo bundle clean --force"
+        sh "echo bundle install"
+        sh "echo bundle exec cap production deploy"
 
-          sleep 20
-        }
+        sleep 20
       }
     }
   }
