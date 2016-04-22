@@ -8,7 +8,7 @@ node {
 stage name: 'Analyze and Deploy'
 
 parallel (
-  staticAnalysis : { node {
+  staticAnalysis: { node {
     git 'git@github.com:HaydenSikh/jenkinsfile-test'
 
     // build job: 'jenkinsfile-test_analysis', wait: false
@@ -18,7 +18,7 @@ parallel (
     step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, consoleParsers: [[parserName: 'Scala Compiler (scalac)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''])
     step([$class: 'TasksPublisher', canComputeNew: false, defaultEncoding: '', excludePattern: 'target/', healthy: '', high: 'FIXME', low: '', normal: 'TODO', pattern: '**/*.scala', unHealthy: ''])
   }},
-  deploy: {{
+  deploy: {
     stage concurrency: 1, name: 'Deploy_to_staging'
 
     node {
@@ -40,6 +40,6 @@ parallel (
 
       sleep 20
     }
-  }}
+  }
 )
 
