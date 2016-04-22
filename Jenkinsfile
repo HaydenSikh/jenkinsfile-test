@@ -9,8 +9,6 @@ node {
   }
 }
 
-stage name: 'Analyze and Deploy'
-
 parallel (
   staticAnalysis: { node {
     wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
