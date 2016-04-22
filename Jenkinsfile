@@ -1,5 +1,5 @@
 
-node('remote') {
+node {
   wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
     wrap([$class: 'TimestamperBuildWrapper']) {
       stage name: 'Build'
@@ -10,9 +10,6 @@ node('remote') {
       def branches = [:]
 
       branches["staticAnalysis"] = {
-        git 'git@github.com:HaydenSikh/jenkinsfile-test'
-
-        // build job: 'jenkinsfile-test_analysis', wait: false
         sh './sbt scalastyle clean coverage test coverageReport'
 
         step([$class: 'CheckStylePublisher', canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/target/scalastyle-result.xml', unHealthy: ''])
