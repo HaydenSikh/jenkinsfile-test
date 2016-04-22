@@ -9,11 +9,14 @@ node {
   }
 }
 
-parallel (
-  staticAnalysis: { node {
+def branches = [:]
+
+branches["staticAnalysis"] = {
+  stage name: 'Static analysis'
+
+  node {
     wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
       wrap([$class: 'TimestamperBuildWrapper']) {
-        stage name: 'Static analysis'
 
         git 'git@github.com:HaydenSikh/jenkinsfile-test'
 
@@ -25,8 +28,10 @@ parallel (
         step([$class: 'TasksPublisher', canComputeNew: false, defaultEncoding: '', excludePattern: 'target/', healthy: '', high: 'FIXME', low: '', normal: 'TODO', pattern: '**/*.scala', unHealthy: ''])
       }
     }
- }},
- deploy: {
+  }
+}
+
+branches["deploy"] = {
    stage concurrency: 1, name: 'Deploy to staging'
 
     node {
@@ -55,4 +60,6 @@ parallel (
       }
     }
   }
-)
+}
+
+parallel branches
