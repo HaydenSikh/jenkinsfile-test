@@ -1,6 +1,7 @@
 stage name: 'Build'
 
 node {
+  git 'git@github.com:HaydenSikh/jenkinsfile-test'
   sh './sbt clean package'
 }
 
@@ -8,6 +9,8 @@ stage name: 'Analyze and Deploy'
 
 parallel (
   staticAnalysis : node {
+    git 'git@github.com:HaydenSikh/jenkinsfile-test'
+
     // build job: 'jenkinsfile-test_analysis', wait: false
     sh './sbt scalastyle clean coverage test coverageReport'
 
