@@ -4,7 +4,7 @@ import scala.util.Random
 
 object Greeter extends App {
   // should generate a style warning for not having an explicit return type
-  def greeting(i: Int) = (i % 5) match {
+  def greeting(i: Int) = (math.abs(i) % 5) match {
     case 0 => "Hello"
     case 1 => "Hola"
     case 2 => "Olá"
