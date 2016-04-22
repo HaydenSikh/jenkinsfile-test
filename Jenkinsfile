@@ -12,8 +12,6 @@ node {
 def branches = [:]
 
 branches["staticAnalysis"] = {
-  stage name: 'Static analysis'
-
   node {
     wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
       wrap([$class: 'TimestamperBuildWrapper']) {
