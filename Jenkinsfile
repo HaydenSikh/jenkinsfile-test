@@ -11,7 +11,7 @@ node {
     wraps {
         git 'git@github.com:HaydenSikh/jenkinsfile-test'
         sh './sbt clean package'
-        stash name: 'sources', includes: '**', excludes: 'target, ops'
+        stash name: 'sources', excludes: 'target, ops'
         stash name: 'ops', includes: 'ops'
     }
 }
