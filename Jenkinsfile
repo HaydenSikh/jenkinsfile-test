@@ -18,7 +18,9 @@ pipeline {
     stage ('Post-build') {
       parallel {
         stage ('Check style') {
-          sh './sbt scalastyle'
+          steps {
+            sh './sbt scalastyle'
+          }
 
           post {
             success {
