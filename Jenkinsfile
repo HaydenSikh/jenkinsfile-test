@@ -11,11 +11,11 @@ pipeline {
       steps {
         sh './sbt clean test package'
 
-        post {
-          always {
-            archiveArtifacts 'target/scala-*/*.jar'
-            junit 'target/test-reports/**/*.xml'
-          }
+      }
+      post {
+        always {
+          archiveArtifacts 'target/scala-*/*.jar'
+          junit 'target/test-reports/**/*.xml'
         }
       }
     }
