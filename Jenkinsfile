@@ -9,11 +9,14 @@ pipeline {
   stages {
     stage ('Build') {
       steps {
-        sh './sbt clean package'
+        sh './sbt clean test package'
 
-        archive includes: 'target/scala-*/*.jar'
-
-        junit 'target/test-reports/**/*.xml'
+        post {
+          always {
+            archiveArtifacts 'target/scala-*/*.jar'
+            junit 'target/test-reports/**/*.xml'
+          }
+        }
       }
     }
 
