@@ -17,15 +17,15 @@ pipeline {
 
     stage ('Post-build') {
       parallel {
-//        stage ('Check style') {
-//          sh './sbt scalastyle'
-//
-//          post {
-//            success {
-//              checkstyle
-//            }
-//          }
-//        }
+        stage ('Check style') {
+          sh './sbt scalastyle'
+
+          post {
+            success {
+              checkstyle pattern: '**/target/scalastyle-result.xml'
+            }
+          }
+        }
 
         stage ('Test Coverage') {
           steps {
