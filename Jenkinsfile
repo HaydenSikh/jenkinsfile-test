@@ -19,35 +19,43 @@ pipeline {
       }
     }
 
-//    stage ('Check style') {
-//      sh './sbt scalastyle'
+    stage ('Post-build') {
+      parallel {
+//        stage ('Check style') {
+//          sh './sbt scalastyle'
 //
-//      post {
-//        success {
-//          checkstyle
+//          post {
+//            success {
+//              checkstyle
+//            }
+//          }
 //        }
-//      }
-//    }
 
-    stage ('Test Coverage') {
-      sh './sbt coverage test coverageReport'
+        stage ('Test Coverage') {
+          steps {
+            sh './sbt coverage test coverageReport'
+          }
 
-      post {
-        success {
-          publishHTML target: [
-            allowMissing: False,
-            alwaysLinkToLastBuild: false,
-            keepAll: true,
-            reportDir: 'target/scala-2.11/scoverage-report',
-            reportFiles: 'index.html',
-            reportName: 'Test Coverage'
-          ]
+          post {
+            success {
+              publishHTML target: [
+                allowMissing: False,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: 'target/scala-2.11/scoverage-report',
+                reportFiles: 'index.html',
+                reportName: 'Test Coverage'
+              ]
+            }
+          }
+        }
+
+        stage ('Deploy to Prod') {
+          steps {
+            echo 'Deploying to Prod!'
+          }
         }
       }
-    }
-
-    stage ('Deploy to Prod') {
-      echo 'Deploying to Prod!'
     }
   }
 }
