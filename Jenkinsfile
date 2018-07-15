@@ -40,7 +40,7 @@ pipeline {
                 keepAll: true,
                 reportDir: 'target/scala-2.11/scoverage-report',
                 reportFiles: 'index.html',
-                reportName: 'Test Coverage'
+                reportName: 'Coverage'
               ]
             }
           }
