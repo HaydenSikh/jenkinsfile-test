@@ -1,9 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'gafiatulin/alpine-sbt'
-    }
-  }
+  agent any
 
   options {
     // Keep the 10 most recent builds
