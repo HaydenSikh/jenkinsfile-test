@@ -19,8 +19,10 @@ pipeline {
       }
       post {
         always {
-          archiveArtifacts 'target/scala-*/*.jar'
           junit 'target/test-reports/**/*.xml'
+        }
+        success {
+          archiveArtifacts 'target/scala-*/*.jar'
         }
       }
     }
