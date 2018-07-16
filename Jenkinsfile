@@ -14,7 +14,7 @@ pipeline {
   stages {
     stage ('Build') {
       steps {
-        sh './sbt clean test package'
+        sh 'sbt clean test package'
 
       }
       post {
