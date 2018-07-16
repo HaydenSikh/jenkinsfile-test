@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'hseeberger/scala-sbt:8u171_2.12.6_1.1.6'
+      args '-v $HOME/.ivy2:/root/.ivy2'
+    }
+  }
 
   options {
     // Keep the 10 most recent builds
